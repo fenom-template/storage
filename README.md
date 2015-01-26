@@ -1,8 +1,5 @@
-Loader tags and modifiers for Fenom from FS
+Data storage for Fenom
 =======
-
-Just like Smarty.
-
 # Setup
 
 Add traits into your Fenom class:
@@ -29,4 +26,3 @@ $fenom->pipe($template_name, $callback);
 $fenom->fetch($template_name);
 $fenom->display($template_name);
 ```
-# Format
