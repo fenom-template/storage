@@ -11,16 +11,6 @@ trait StorageTrait
     protected $_vars = array();
 
     /**
-     * @param array $variables
-     * @return $this
-     */
-    public function assignAll(array $variables)
-    {
-        $this->_vars = $variables + $this->_vars;
-        return $this;
-    }
-
-    /**
      * @param string $name
      * @param mixed $variable
      * @return $this
@@ -54,6 +44,21 @@ trait StorageTrait
     public function assignByRef($name, &$variable)
     {
         $this->_vars[$name] = & $variable;
+        return $this;
+    }
+
+    /**
+     * Set all variables
+     * @param array $vars
+     * @param bool $merge merge new variables array with current or rewrite
+     * @return $this
+     */
+    public function assignAll(array $vars, $merge = true) {
+        if($merge) {
+            $this->_vars = $vars + $this->_vars;
+        } else {
+            $this->_vars = $vars;
+        }
         return $this;
     }
 

@@ -29,6 +29,35 @@ class StorageTest extends \PHPUnit_Framework_TestCase {
         $fenom->resetVars();
 
         $this->assertEmpty($fenom->getVars());
+
+        $fenom->assignAll(array(
+            "one" => 1,
+            "two" => 2
+        ));
+
+        $this->assertEquals(array(
+            "one" => 1,
+            "two" => 2
+        ), $fenom->getVars());
+
+        $fenom->assignAll(array(
+            "two" => 2.2,
+            "three" => 3
+        ));
+
+        $this->assertEquals(array(
+            "one" => 1,
+            "two" => 2.2,
+            "three" => 3
+        ), $fenom->getVars());
+
+        $fenom->assignAll(array(
+            "one" => 1.1
+        ), false);
+
+        $this->assertEquals(array(
+            "one" => 1.1,
+        ), $fenom->getVars());
     }
 
 }
