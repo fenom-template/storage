@@ -1,8 +1,20 @@
 Data storage for Fenom
 =======
+
+# Install
+
+Use composer:
+```json
+{  
+    "require": {
+        "fenom/storage": "1.*"
+    }
+}
+```
+
 # Setup
 
-Add traits into your Fenom class:
+Add trait into your Fenom class:
 
 ```php
 
