@@ -18,8 +18,8 @@ Add trait into your Fenom class:
 
 ```php
 
-class MyFenom extends Fenom {
-    use Fenom\StorageTrait;
+class MyFenom extends \Fenom {
+    use \Fenom\StorageTrait;
 }
 ```
 
