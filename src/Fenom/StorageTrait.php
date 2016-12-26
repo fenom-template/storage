@@ -121,7 +121,7 @@ trait StorageTrait
     public function display($template, array $vars = array())
     {
         /* @var \Fenom|StorageTrait $this */
-        return $this->_vars = $this->getTemplate($template)->display($template, $vars ? $vars + $this->_vars : $this->_vars);
+        return $this->_vars = $this->getTemplate($template)->display($vars ? $vars + $this->_vars : $this->_vars);
     }
 
     /**
