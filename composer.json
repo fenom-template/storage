@@ -8,17 +8,20 @@
         {
             "name": "Ivan Shalganov",
             "email": "a.cobest@gmail.com"
+        },
+        {
+            "name": "Maksim Kastsiukevich",
+            "email": "support@maxicms.ru"
         }
     ],
     "require": {
-        "php": ">=5.4.8"
+        "php": ">=8.2",
+        "fenom/fenom": "^3.1.0"
     },
     "require-dev": {
-        "fenom/fenom": "2.*",
-        "phpunit/phpunit": "*",
-        "satooshi/php-coveralls": "dev-master"
+        "phpunit/phpunit": "^10.0"
     },
     "autoload": {
-        "psr-0": { "Fenom\\": "src/" }
+        "psr-4": { "Fenom\\": "src/Fenom/" }
     }
 }

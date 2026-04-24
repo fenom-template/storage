@@ -2,59 +2,34 @@
 
 namespace Fenom;
 
-
 trait StorageTrait
 {
-    /**
-     * @var array storage
-     */
-    protected $_vars = array();
+    protected array $_vars = [];
 
-    /**
-     * @param string $name
-     * @param mixed $variable
-     * @return $this
-     */
-    public function assign($name, $variable)
+    public function assign(string $name, mixed $variable): static
     {
         $this->_vars[$name] = $variable;
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param mixed $key
-     * @param mixed $variable
-     * @return $this
-     */
-    public function assignKey($name, $key, $variable)
+    public function assignKey(string $name, mixed $key, mixed $variable): static
     {
-        if (!is_array($this->_vars[$name])) {
-            $this->_vars[$name] = (array)$this->_vars[$name];
+        if (!is_array($this->_vars[$name] ?? null)) {
+            $this->_vars[$name] = (array)($this->_vars[$name] ?? null);
         }
         $this->_vars[$name][$key] = $variable;
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param mixed $variable
-     * @return $this
-     */
-    public function assignByRef($name, &$variable)
+    public function assignByRef(string $name, mixed &$variable): static
     {
-        $this->_vars[$name] = & $variable;
+        $this->_vars[$name] = &$variable;
         return $this;
     }
 
-    /**
-     * Set all variables
-     * @param array $vars
-     * @param bool $merge merge new variables array with current or rewrite
-     * @return $this
-     */
-    public function assignAll(array $vars, $merge = true) {
-        if($merge) {
+    public function assignAll(array $vars, bool $merge = true): static
+    {
+        if ($merge) {
             $this->_vars = $vars + $this->_vars;
         } else {
             $this->_vars = $vars;
@@ -62,15 +37,10 @@ trait StorageTrait
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param mixed $variable
-     * @return $this
-     */
-    public function prepend($name, $variable)
+    public function prepend(string $name, mixed $variable): static
     {
         if (!isset($this->_vars[$name])) {
-            $this->_vars[$name] = array();
+            $this->_vars[$name] = [];
         }
         if (!is_array($this->_vars[$name])) {
             $this->_vars[$name] = (array)$this->_vars[$name];
@@ -79,15 +49,10 @@ trait StorageTrait
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param mixed $variable
-     * @return $this
-     */
-    public function append($name, $variable)
+    public function append(string $name, mixed $variable): static
     {
         if (!isset($this->_vars[$name])) {
-            $this->_vars[$name] = array();
+            $this->_vars[$name] = [];
         }
         if (!is_array($this->_vars[$name])) {
             $this->_vars[$name] = (array)$this->_vars[$name];
@@ -96,62 +61,51 @@ trait StorageTrait
         return $this;
     }
 
-    /**
-     * Get collected variables
-     * @return array
-     */
-    public function getVars()
+    public function getVars(): array
     {
         return $this->_vars;
     }
 
-    /**
-     * Reset collected variables
-     * @return $this
-     */
-    public function resetVars()
+    public function resetVars(): static
     {
-        $this->_vars = array();
+        $this->_vars = [];
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function display($template, array $vars = array())
+    public function display(array|string $template, array $vars = []): array
     {
-        /* @var \Fenom|StorageTrait $this */
-        return $this->_vars = $this->getTemplate($template)->display($vars ? $vars + $this->_vars : $this->_vars);
+        $scope = $vars ?: $this->_vars;
+        $this->_vars = $scope;
+        return $this->getTemplate($template)->display($scope);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fetch($template, array $vars = array())
+    public function fetch(array|string $template, array $vars = []): mixed
     {
-
-        /* @var \Fenom|StorageTrait $this */
+        $scope = $vars ?: $this->_vars;
+        $this->_vars = $scope;
         $tpl = $this->getTemplate($template);
         ob_start();
         try {
-
-            $this->_vars = $tpl->display($vars ? $vars + $this->_vars : $this->_vars);
+            $tpl->display($scope);
             return ob_get_clean();
-        } catch(\Exception $e) {
+        } catch (\Throwable $e) {
             ob_end_clean();
             throw $e;
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function pipe($template, $callback, array $vars = array(), $chunk = 1e6)
+    public function pipe(array|string $template, callable $callback, array $vars = [], int $chunk = 1_000_000): array
     {
-        /* @var \Fenom|StorageTrait $this */
+        $scope = $vars ?: $this->_vars;
+        $this->_vars = $scope;
         ob_start($callback, $chunk, PHP_OUTPUT_HANDLER_STDFLAGS);
-        $data = $this->getTemplate($template)->display($vars ? $vars + $this->_vars : $this->_vars);
-        ob_end_flush();
-        return $data;
+        try {
+            $result = $this->getTemplate($template)->display($scope);
+            ob_end_flush();
+            return $result ?? [];
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        }
     }
 }
